@@ -7,7 +7,6 @@ import dartzee.core.util.getParentWindow
 import dartzee.core.util.runOnEventThreadBlocking
 import dartzee.listener.DartboardListener
 import dartzee.logging.CODE_RENDERED_DARTBOARD
-import dartzee.logging.CODE_RENDER_ERROR
 import dartzee.logging.KEY_CACHED
 import dartzee.logging.KEY_DURATION
 import dartzee.screen.game.DartsGameScreen
@@ -226,9 +225,8 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
         }
 
         lastHoveredSegment?.let { colourSegment(it, false) }
-
         lastHoveredSegment = hoveredSegment
-        colourSegment(hoveredSegment, true)
+        hoveredSegment?.let { colourSegment(it, true) }
     }
 
     open fun getInitialColourForSegment(segment: DartboardSegment) = getColourForSegment(segment, colourWrapper)
@@ -295,7 +293,13 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
 
     fun getAllSegments() = hmSegmentKeyToSegment.values.toList()
 
-    fun getSegmentForPoint(pt: Point, stackTrace: Boolean = true): StatefulSegment
+    fun getDataSegmentForPoint(pt: Point): DartboardSegment
+    {
+        val segment = getSegmentForPoint(pt)
+        return segment?.toDataSegment() ?: DartboardSegment(SegmentType.MISSED_BOARD, 0)
+    }
+
+    fun getSegmentForPoint(pt: Point): StatefulSegment?
     {
         val segment = getAllSegments().firstOrNull { it.containsPoint(pt) }
         if (segment != null)
@@ -303,20 +307,14 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
             return segment
         }
 
-        if (stackTrace)
-        {
-            logger.error(CODE_RENDER_ERROR, "Couldn't find segment for point (" + pt.getX() + ", " + pt.getY() + ")."
-                    + "Width = " + width + ", Height = " + height)
-        }
-
-        return factoryAndCacheSegmentForPoint(pt)
+        return null
     }
 
-    private fun factoryAndCacheSegmentForPoint(pt: Point): StatefulSegment
+    private fun factoryAndCacheSegmentForPoint(pt: Point): StatefulSegment?
     {
-        val newSegment = factorySegmentForPoint(pt, centerPoint, diameter)
-        val segmentKey = "${newSegment.score}_${newSegment.type}"
+        val newSegment = factorySegmentForPoint(pt, centerPoint, diameter) ?: return null
 
+        val segmentKey = "${newSegment.score}_${newSegment.type}"
         val segment = hmSegmentKeyToSegment.getOrPut(segmentKey) { newSegment }
         segment.addPoint(pt)
         return segment
@@ -336,7 +334,7 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
     fun isDouble(pt: Point): Boolean
     {
         val seg = getSegmentForPoint(pt)
-        return seg.isDoubleExcludingBull()
+        return seg?.isDoubleExcludingBull() ?: false
     }
 
     fun getPotentialAimPoints() = getPotentialAimPoints(centerPoint, diameter)
@@ -370,8 +368,8 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
             rationalisePoint(pt)
         }
 
-        val segment = getSegmentForPoint(pt)
-        return getDartForSegment(pt, segment.toDataSegment())
+        val segment = getDataSegmentForPoint(pt)
+        return getDartForSegment(pt, segment)
     }
 
     fun rationalisePoint(pt: Point)

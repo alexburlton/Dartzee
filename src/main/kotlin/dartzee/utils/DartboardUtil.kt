@@ -40,7 +40,7 @@ fun getAdjacentNumbers(number: Int): MutableList<Int>
     return mutableListOf(numberOrder[ix-1], numberOrder[ix+1])
 }
 
-fun factorySegmentForPoint(dartPt: Point, centerPt: Point, diameter: Double): StatefulSegment
+fun factorySegmentForPoint(dartPt: Point, centerPt: Point, diameter: Double): StatefulSegment?
 {
     val radius = getDistance(dartPt, centerPt)
     val ratio = 2 * radius / diameter
@@ -58,6 +58,11 @@ fun factorySegmentForPoint(dartPt: Point, centerPt: Point, diameter: Double): St
     val angle = getAngleForPoint(dartPt, centerPt)
     val score = getScoreForAngle(angle)
     val type = calculateTypeForRatioNonBullseye(ratio)
+
+    if (type == SegmentType.MISSED_BOARD)
+    {
+        return null
+    }
 
     return StatefulSegment(type, score)
 }
@@ -111,7 +116,7 @@ fun getPotentialAimPoints(centerPt: Point, diameter: Double): Set<AimPoint>
     return points.toSet()
 }
 
-fun getColourForPointAndSegment(pt: Point?, segment: StatefulSegment, colourWrapper: ColourWrapper?): Color
+fun getColourForPointAndSegment(pt: Point, segment: StatefulSegment, colourWrapper: ColourWrapper?): Color
 {
     val colourWrapperToUse = colourWrapper ?: getColourWrapperFromPrefs()
 
@@ -123,7 +128,7 @@ fun getColourForPointAndSegment(pt: Point?, segment: StatefulSegment, colourWrap
         return edgeColour
     }
 
-    return getColourFromHashMap(segment.toDataSegment(), colourWrapperToUse)
+    return getColourForSegment(segment.toDataSegment(), colourWrapperToUse)
 }
 
 fun getColourForSegment(segment: DartboardSegment, colourWrapper: ColourWrapper?): Color

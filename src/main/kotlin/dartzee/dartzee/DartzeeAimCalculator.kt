@@ -21,7 +21,7 @@ class DartzeeAimCalculator
     fun getPointToAimFor(dartboard: Dartboard, segmentStatus: SegmentStatus, aggressive: Boolean): Point
     {
         val scoringSegments = segmentStatus.scoringSegments.map { miniDartboard.getSegment(it.score, it.type)!! }
-        val validSegments = segmentStatus.validSegments.map { miniDartboard.getSegment(it.score, it.type)!! }
+        val validSegments = segmentStatus.validSegments.filterNot { it.isMiss() }.map { miniDartboard.getSegment(it.score, it.type)!! }
 
         val segmentsToConsiderAimingFor = if (aggressive) scoringSegments else validSegments
         val dataSegmentsToConsiderAimingFor = segmentsToConsiderAimingFor.map { it.toDataSegment() }
@@ -40,8 +40,8 @@ class DartzeeAimCalculator
         val potentialPointsToAimFor = miniDartboard.getPotentialAimPoints().filter { aimingPointSet.contains(it.point) }
         val contendingPoints = getMaxCirclePoints(validPointSet, potentialPointsToAimFor)
 
-        val bestScore = contendingPoints.map { miniDartboard.getSegmentForPoint(it.point).getTotal() }.maxOrZero()
-        val contendingHighScorePoints = contendingPoints.filter { miniDartboard.getSegmentForPoint(it.point).getTotal() == bestScore }
+        val bestScore = contendingPoints.map { miniDartboard.getDataSegmentForPoint(it.point).getTotal() }.maxOrZero()
+        val contendingHighScorePoints = contendingPoints.filter { miniDartboard.getDataSegmentForPoint(it.point).getTotal() == bestScore }
 
         //Prefer even angles to odd ones
         val bestPoint = contendingHighScorePoints.minBy { it.angle % 2 }!!

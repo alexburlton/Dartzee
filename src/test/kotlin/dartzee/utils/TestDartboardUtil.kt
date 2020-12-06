@@ -48,7 +48,7 @@ class TestDartboardUtil : AbstractRegistryTest()
         assertSegment(Point(0, -999), SegmentType.DOUBLE, 20, 2, DartsColour.DARTBOARD_RED)
         assertSegment(Point(0, -1000), SegmentType.MISS, 20, 0, Color.black)
         assertSegment(Point(0, -1299), SegmentType.MISS, 20, 0, Color.black)
-        assertSegment(Point(0, -1300), SegmentType.MISSED_BOARD, 20, 0, DartsColour.TRANSPARENT)
+        factorySegmentForPoint(Point(0, -1300), Point(0, 0), 2000.0) shouldBe null
 
         //Test 45 degrees etc
         assertSegment(Point(100, -100), SegmentType.INNER_SINGLE, 4, 1, DartsColour.DARTBOARD_WHITE)
@@ -59,7 +59,7 @@ class TestDartboardUtil : AbstractRegistryTest()
 
     private fun assertSegment(pt: Point, segmentType: SegmentType, score: Int, multiplier: Int, expectedColor: Color)
     {
-        val segment = factorySegmentForPoint(pt, Point(0, 0), 2000.0)
+        val segment = factorySegmentForPoint(pt, Point(0, 0), 2000.0)!!
 
         val segmentStr = "" + segment
         segmentStr shouldBe "$score ($segmentType)"

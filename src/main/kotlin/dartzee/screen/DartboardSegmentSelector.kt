@@ -44,14 +44,14 @@ class DartboardSegmentSelector(width: Int = 500, height: Int = 500): Dartboard(w
 
     override fun dartThrown(pt: Point)
     {
-        val segment = getSegmentForPoint(pt, false)
+        val segment = getSegmentForPoint(pt)
         toggleSegment(segment)
     }
 
-    private fun toggleSegment(segment: StatefulSegment)
+    private fun toggleSegment(segment: StatefulSegment?)
     {
         lastDraggedSegment = segment
-        if (segment.isMiss())
+        if (segment == null || segment.isMiss())
         {
             return
         }
@@ -78,7 +78,7 @@ class DartboardSegmentSelector(width: Int = 500, height: Int = 500): Dartboard(w
     }
     override fun mouseDragged(arg0: MouseEvent)
     {
-        val segment = getSegmentForPoint(arg0.point, false)
+        val segment = getSegmentForPoint(arg0.point)
         if (segment == lastDraggedSegment)
         {
             return
