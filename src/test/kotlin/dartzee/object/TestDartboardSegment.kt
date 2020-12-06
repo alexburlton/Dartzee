@@ -12,8 +12,7 @@ class TestDartboardSegment: AbstractTest()
     {
         doubleNineteen.isMiss() shouldBe false
         singleTwenty.isMiss() shouldBe false
-        missTwenty.isMiss() shouldBe true
-        missedBoard.isMiss() shouldBe true
+        miss.isMiss() shouldBe true
     }
 
     @Test
@@ -33,8 +32,7 @@ class TestDartboardSegment: AbstractTest()
         doubleNineteen.getMultiplier() shouldBe 2
         trebleNineteen.getMultiplier() shouldBe 3
         singleTwenty.getMultiplier() shouldBe 1
-        missedBoard.getMultiplier() shouldBe 0
-        missTwenty.getMultiplier() shouldBe 0
+        miss.getMultiplier() shouldBe 0
     }
 
     @Test
@@ -43,7 +41,6 @@ class TestDartboardSegment: AbstractTest()
         doubleNineteen.getTotal() shouldBe 38
         trebleTwenty.getTotal() shouldBe 60
         singleEighteen.getTotal() shouldBe 18
-        missedBoard.getTotal() shouldBe 0
-        missTwenty.getTotal() shouldBe 0
+        miss.getTotal() shouldBe 0
     }
 }

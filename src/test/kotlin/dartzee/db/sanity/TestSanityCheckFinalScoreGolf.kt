@@ -51,7 +51,6 @@ class TestSanityCheckFinalScoreGolf: AbstractTest()
     @Test
     fun `Should get the right score based on segment type`()
     {
-        checkScoreCorrectForSegmentType(SegmentType.MISSED_BOARD, 5)
         checkScoreCorrectForSegmentType(SegmentType.MISS, 5)
         checkScoreCorrectForSegmentType(SegmentType.OUTER_SINGLE, 4)
         checkScoreCorrectForSegmentType(SegmentType.INNER_SINGLE, 3)

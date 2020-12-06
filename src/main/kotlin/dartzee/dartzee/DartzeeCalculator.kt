@@ -2,7 +2,6 @@ package dartzee.dartzee
 
 import dartzee.`object`.Dart
 import dartzee.`object`.DartboardSegment
-import dartzee.`object`.SegmentType
 import dartzee.core.util.allIndexed
 import dartzee.core.util.getAllPermutations
 import dartzee.dartzee.dart.AbstractDartzeeDartRule
@@ -121,27 +120,16 @@ class DartzeeCalculator: AbstractDartzeeCalculator()
         return probabilities.reduce { acc, i -> acc * i }
     }
 
-    private fun getAllSegments(): List<DartboardSegment>
-    {
-        val segments = getAllPossibleSegments().filter { !it.isMiss() }
-        return segments + DartboardSegment(SegmentType.MISS, 20)
-    }
-
     private fun generateAllPossibilities(): List<List<DartboardSegment>>
     {
-        val segments = getAllSegments()
-
-        val allPossibilities: MutableList<List<DartboardSegment>> = mutableListOf()
-        segments.forEach { s1 ->
-            segments.forEach { s2 ->
-                segments.forEach { s3 ->
-                    val combination = listOf(s1, s2, s3)
-                    allPossibilities.add(combination)
+        val segments = getAllPossibleSegments()
+        return segments.flatMap { s1 ->
+            segments.flatMap { s2 ->
+                segments.map { s3 ->
+                    listOf(s1, s2, s3)
                 }
             }
         }
-
-        return allPossibilities.toList()
     }
 
     fun generateAllPossibilities(dartsSoFar: List<Dart>): List<List<DartboardSegment>>
@@ -151,7 +139,7 @@ class DartzeeCalculator: AbstractDartzeeCalculator()
             return allPossibilities
         }
 
-        val segments = getAllSegments()
+        val segments = getAllPossibleSegments()
         val segmentsSoFar = dartsSoFar.map { DartboardSegment(it.segmentType, it.score) }
 
         var allPossibilities: List<List<DartboardSegment>> = segments.map { segmentsSoFar + it }

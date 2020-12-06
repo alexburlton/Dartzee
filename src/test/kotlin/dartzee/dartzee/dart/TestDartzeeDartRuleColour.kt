@@ -29,8 +29,7 @@ class TestDartzeeDartRuleColour: AbstractDartzeeRuleTest<DartzeeDartRuleColour>(
         rule.isValidSegment(singleNineteen) shouldBe false
         rule.isValidSegment(doubleNineteen) shouldBe false
         rule.isValidSegment(trebleNineteen) shouldBe false
-        rule.isValidSegment(missTwenty) shouldBe false
-        rule.isValidSegment(missedBoard) shouldBe false
+        rule.isValidSegment(miss) shouldBe false
         rule.isValidSegment(bullseye) shouldBe false
         rule.isValidSegment(outerBull) shouldBe false
     }
@@ -47,8 +46,7 @@ class TestDartzeeDartRuleColour: AbstractDartzeeRuleTest<DartzeeDartRuleColour>(
         rule.isValidSegment(singleNineteen) shouldBe true
         rule.isValidSegment(doubleNineteen) shouldBe false
         rule.isValidSegment(trebleNineteen) shouldBe false
-        rule.isValidSegment(missTwenty) shouldBe false
-        rule.isValidSegment(missedBoard) shouldBe false
+        rule.isValidSegment(miss) shouldBe false
         rule.isValidSegment(bullseye) shouldBe false
         rule.isValidSegment(outerBull) shouldBe false
     }
@@ -65,8 +63,7 @@ class TestDartzeeDartRuleColour: AbstractDartzeeRuleTest<DartzeeDartRuleColour>(
         rule.isValidSegment(singleNineteen) shouldBe false
         rule.isValidSegment(doubleNineteen) shouldBe true
         rule.isValidSegment(trebleNineteen) shouldBe true
-        rule.isValidSegment(missTwenty) shouldBe false
-        rule.isValidSegment(missedBoard) shouldBe false
+        rule.isValidSegment(miss) shouldBe false
         rule.isValidSegment(bullseye) shouldBe false
         rule.isValidSegment(outerBull) shouldBe true
     }
@@ -83,8 +80,7 @@ class TestDartzeeDartRuleColour: AbstractDartzeeRuleTest<DartzeeDartRuleColour>(
         rule.isValidSegment(singleNineteen) shouldBe false
         rule.isValidSegment(doubleNineteen) shouldBe false
         rule.isValidSegment(trebleNineteen) shouldBe false
-        rule.isValidSegment(missTwenty) shouldBe false
-        rule.isValidSegment(missedBoard) shouldBe false
+        rule.isValidSegment(miss) shouldBe false
         rule.isValidSegment(bullseye) shouldBe true
         rule.isValidSegment(outerBull) shouldBe false
     }
@@ -102,8 +98,7 @@ class TestDartzeeDartRuleColour: AbstractDartzeeRuleTest<DartzeeDartRuleColour>(
         rule.isValidSegment(singleNineteen) shouldBe false
         rule.isValidSegment(doubleNineteen) shouldBe false
         rule.isValidSegment(trebleNineteen) shouldBe false
-        rule.isValidSegment(missTwenty) shouldBe false
-        rule.isValidSegment(missedBoard) shouldBe false
+        rule.isValidSegment(miss) shouldBe false
         rule.isValidSegment(bullseye) shouldBe true
         rule.isValidSegment(outerBull) shouldBe false
     }

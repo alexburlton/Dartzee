@@ -2,7 +2,9 @@ package dartzee.screen.dartzee
 
 import com.github.alexburlton.swingtest.shouldMatchImage
 import dartzee.*
-import dartzee.`object`.*
+import dartzee.`object`.DEFAULT_COLOUR_WRAPPER
+import dartzee.`object`.GREY_COLOUR_WRAPPER
+import dartzee.`object`.SegmentType
 import dartzee.helper.AbstractTest
 import dartzee.helper.makeSegmentStatus
 import dartzee.screen.Dartboard
@@ -67,7 +69,7 @@ class TestDartzeeDartboard: AbstractTest()
     {
         val dartboard = DartzeeDartboard(100, 100)
         dartboard.paintDartboard(DEFAULT_COLOUR_WRAPPER)
-        dartboard.refreshValidSegments(makeSegmentStatus(listOf(trebleNineteen, missTwenty)))
+        dartboard.refreshValidSegments(makeSegmentStatus(listOf(trebleNineteen, miss)))
 
         var missTwentyPts = dartboard.getPointsForSegment(20, SegmentType.MISS)
         missTwentyPts.forEach { dartboard.getColor(it) shouldBe Color.BLACK }
@@ -76,8 +78,7 @@ class TestDartzeeDartboard: AbstractTest()
         missTwentyPts = dartboard.getPointsForSegment(20, SegmentType.MISS)
         missTwentyPts.forEach { dartboard.getColor(it) shouldBe Color.BLACK }
 
-        val missedBoardSegments = dartboard.getPointsForSegment(20, SegmentType.MISSED_BOARD)
-        missedBoardSegments.forEach { dartboard.getColor(it) shouldBe DartsColour.TRANSPARENT }
+        dartboard.getColor(Point(0, 0)) shouldBe DartsColour.TRANSPARENT
     }
 
     @Test

@@ -318,7 +318,7 @@ class TestValidCombinations: AbstractTest()
         val rule = makeDartzeeRuleDto(allowMisses = false)
         val ruleWithMisses = makeDartzeeRuleDto(allowMisses = true)
 
-        val combination = listOf(singleTwenty, missTwenty, singleTwenty)
+        val combination = listOf(singleTwenty, miss, singleTwenty)
         DartzeeCalculator().isValidCombination(combination, rule) shouldBe false
         DartzeeCalculator().isValidCombination(combination, ruleWithMisses) shouldBe true
     }

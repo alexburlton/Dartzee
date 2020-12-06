@@ -8,8 +8,7 @@ enum class SegmentType
     TREBLE,
     OUTER_SINGLE,
     INNER_SINGLE,
-    MISS,
-    MISSED_BOARD;
+    MISS;
 
     fun getGolfScore() =
         when (this)
@@ -18,7 +17,7 @@ enum class SegmentType
             TREBLE -> 2
             INNER_SINGLE -> 3
             OUTER_SINGLE -> 4
-            MISS, MISSED_BOARD -> 5
+            MISS -> 5
         }
 
     fun getMultiplier() =
@@ -26,7 +25,7 @@ enum class SegmentType
         {
             DOUBLE -> 2
             TREBLE -> 3
-            MISS, MISSED_BOARD -> 0
+            MISS -> 0
             OUTER_SINGLE, INNER_SINGLE -> 1
         }
 
@@ -39,8 +38,7 @@ enum class SegmentType
             TREBLE -> 275 //5500
             OUTER_SINGLE -> 2464 //49280
             INNER_SINGLE -> 1586 //31720
-            MISS -> MISS_FUDGE_FACTOR
-            else -> 3321
+            else -> MISS_FUDGE_FACTOR
         }
     }
 }

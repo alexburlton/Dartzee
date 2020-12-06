@@ -2,7 +2,7 @@ package dartzee.screen
 
 import dartzee.`object`.*
 import dartzee.core.bean.getPointList
-import dartzee.core.bean.paint
+import dartzee.core.bean.paintOffset
 import dartzee.core.util.getParentWindow
 import dartzee.core.util.runOnEventThreadBlocking
 import dartzee.listener.DartboardListener
@@ -24,6 +24,7 @@ import javax.swing.ImageIcon
 import javax.swing.JLabel
 import javax.swing.JLayeredPane
 import javax.swing.SwingConstants
+import kotlin.math.round
 
 const val LAYER_DARTS = 2
 const val LAYER_DODGY = 3
@@ -94,7 +95,7 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
         diameter = 0.7 * width
 
         //Construct the segments, populated with their points. Cache pt -> segment.
-        getPointList(width, height).forEach { factoryAndCacheSegmentForPoint(it) }
+        getPointList(width, height, ((width - diameter)/2).toInt()).forEach { factoryAndCacheSegmentForPoint(it) }
         getAllSegments().forEach { it.computeEdgePoints() }
 
         if (usingCache)
@@ -130,10 +131,36 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
 
     private fun paintDartboardImage()
     {
-        val hmPointToColor = getAllSegments().flatMap { it.getColorMap(colourWrapper) }.toMap()
+        val img = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
 
-        dartboardImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        dartboardImage?.paint { hmPointToColor[it] }
+        // 1) Paint the whole thing the background colour (usually transparent)
+        val backgroundColour = colourWrapper?.missedBoardColour ?: DartsColour.TRANSPARENT
+        val g = img.graphics.create() as Graphics2D
+        g.color = backgroundColour
+        g.fillRect(0, 0, width, height)
+        g.dispose()
+
+        // 2) Paint the outer dartboard piece if appropriate
+        val outerDartboardColour = colourWrapper?.outerDartboardColour ?: Color.BLACK
+        if (backgroundColour != outerDartboardColour)
+        {
+            val thickness = (diameter * 0.16).toFloat()
+            val outerG = img.graphics.create() as Graphics2D
+            outerG.color = colourWrapper?.outerDartboardColour ?: Color.BLACK
+            outerG.stroke = BasicStroke(thickness)
+
+            val startX = centerPoint.x - (diameter * 1.15)/2
+            val startY = centerPoint.y - (diameter * 1.15)/2
+            outerG.drawOval(startX.toInt(), startY.toInt(), (diameter * 1.15).toInt(), (diameter * 1.15).toInt())
+            outerG.dispose()
+        }
+
+        // 3) Paint the rest according to our StatefulSegments
+        val offset = ((width - diameter)/2).toInt()
+        val hmPointToColor = getAllSegments().flatMap { it.getColorMap(colourWrapper) }.toMap()
+        img.paintOffset(offset) { hmPointToColor[it] ?: colourWrapper?.missedBoardColour }
+
+        dartboardImage = img
     }
 
     fun initialiseFromTemplate()
@@ -151,7 +178,7 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
         //Get the height we want for our labels, which is half the thickness of the outer band
         val radius = diameter / 2
         val outerRadius = UPPER_BOUND_OUTSIDE_BOARD_RATIO * radius
-        val lblHeight = Math.round((outerRadius - radius) / 2).toInt()
+        val lblHeight = round((outerRadius - radius) / 2).toInt()
 
         val fontToUse = getFontForDartboardLabels(lblHeight)
 
@@ -174,7 +201,8 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
             val lblX = avgPoint.getX().toInt() - lblWidth / 2
             val lblY = avgPoint.getY().toInt() - lblHeight / 2
 
-            val g = dartboardImage!!.graphics as Graphics2D
+            val g = dartboardImage!!.graphics.create() as Graphics2D
+            g.color = Color.WHITE
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
             g.translate(lblX, lblY)
             lbl.paint(g)
@@ -296,7 +324,7 @@ open class Dartboard(width: Int = 400, height: Int = 400): JLayeredPane(), Mouse
     fun getDataSegmentForPoint(pt: Point): DartboardSegment
     {
         val segment = getSegmentForPoint(pt)
-        return segment?.toDataSegment() ?: DartboardSegment(SegmentType.MISSED_BOARD, 0)
+        return segment?.toDataSegment() ?: DartboardSegment(SegmentType.MISS, 0)
     }
 
     fun getSegmentForPoint(pt: Point): StatefulSegment?

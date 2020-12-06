@@ -69,10 +69,17 @@ fun BufferedImage.paint(fn: (pt: Point) -> Color?)
 
     setRGB(0, 0, width, height, colors.toIntArray(), 0, width)
 }
-fun getPointList(width: Int, height: Int): List<Point>
+fun BufferedImage.paintOffset(offset: Int, fn: (pt: Point) -> Color?)
 {
-    val yRange = 0 until height
-    val xRange = 0 until width
+    val pts = getPointList(width, height, offset)
+    val colors = pts.map { fn(it)?.rgb ?: getRGB(it.x, it.y) }
+
+    setRGB(offset, offset, width - (2 * offset), height - (2 * offset), colors.toIntArray(), 0, width - (2 * offset))
+}
+fun getPointList(width: Int, height: Int, offset: Int = 0): List<Point>
+{
+    val yRange = offset until height - offset
+    val xRange = offset until width - offset
 
     return yRange.map { y -> xRange.map { x -> Point(x, y)} }.flatten()
 }

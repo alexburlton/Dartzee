@@ -22,7 +22,7 @@ class TestDartzeeDartRuleScore: AbstractDartzeeRuleTest<DartzeeDartRuleScore>()
         rule.isValidSegment(doubleTwenty) shouldBe true
         rule.isValidSegment(trebleTwenty) shouldBe true
         rule.isValidSegment(trebleNineteen) shouldBe false
-        rule.isValidSegment(missTwenty) shouldBe false
+        rule.isValidSegment(miss) shouldBe false
     }
 
     @Test

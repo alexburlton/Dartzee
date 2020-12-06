@@ -15,7 +15,6 @@ class TestSegmentType: AbstractTest()
         SegmentType.INNER_SINGLE.getMultiplier() shouldBe 1
         SegmentType.OUTER_SINGLE.getMultiplier() shouldBe 1
         SegmentType.MISS.getMultiplier() shouldBe 0
-        SegmentType.MISSED_BOARD.getMultiplier() shouldBe 0
     }
 
     @Test
@@ -26,7 +25,6 @@ class TestSegmentType: AbstractTest()
         SegmentType.INNER_SINGLE.getGolfScore() shouldBe 3
         SegmentType.OUTER_SINGLE.getGolfScore() shouldBe 4
         SegmentType.MISS.getGolfScore() shouldBe 5
-        SegmentType.MISSED_BOARD.getGolfScore() shouldBe 5
     }
 
     @Test

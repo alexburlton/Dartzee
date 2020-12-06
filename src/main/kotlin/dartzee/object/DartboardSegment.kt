@@ -4,7 +4,7 @@ import dartzee.core.util.getAttributeInt
 import dartzee.core.util.setAttributeAny
 import org.w3c.dom.Element
 
-const val MISS_FUDGE_FACTOR = 1805
+const val MISS_FUDGE_FACTOR = 5126
 
 /**
  * Data class so that equivalent segments are treated as equal (e.g. DartzeeRuleCalculationResult externalisation)
@@ -14,7 +14,7 @@ data class DartboardSegment(val type: SegmentType, val score: Int)
     /**
      * Helpers
      */
-    fun isMiss() = type == SegmentType.MISS || type == SegmentType.MISSED_BOARD
+    fun isMiss() = type == SegmentType.MISS
     fun isDoubleExcludingBull() = type == SegmentType.DOUBLE && score != 25
     fun getMultiplier() = type.getMultiplier()
     fun getTotal(): Int = score * getMultiplier()
